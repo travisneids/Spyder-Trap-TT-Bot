@@ -75,6 +75,7 @@ var usersList = { };
 var djs = { };
 var usertostep;
 var userstepped = false;
+var djsCount;
 
 //Used for bonus awesoming
 var bonuspoints = new Array();
@@ -99,7 +100,14 @@ function admincheck(userid) {
 	}
 	return false;
 }
-
+//Checks number of DJS
+function checkDjCount() {
+	djsCount = 0;
+	for(i in djs) {
+		djsCount++;
+	}
+	return djsCount;
+}
 //Adds the song data to the songdata table.
 //This runs on the endsong event.
 function addToDb(data) {
@@ -146,6 +154,7 @@ function getTarget() {
 //TODO: Actually handle those errors (99% of the time it'll be a "db/table
 //	already exists" error which is why I didn't handle them immediately)
 bot.on('ready', function (data) {
+
 	//Creates DB and tables if needed, connects to db
 	client.query('CREATE DATABASE ' + config.DATABASE,
 		function(error) {
@@ -186,7 +195,6 @@ bot.on('ready', function (data) {
 				throw (error);
 			}
 		});
-			
 	bot.roomRegister(config.ROOMID);
 });
 
@@ -314,7 +322,6 @@ bot.on('speak', function (data) {
 		//--------------------------------------
 		//COMMAND LISTS
 		//--------------------------------------
-	
 		case '.sparklecommands':
 			bot.speak('commands: .users, .owner, .source, rules, ping, '
 				+ 'mostplayed, mostawesomed, mostlamed, mymostplayed, '
@@ -709,8 +716,8 @@ bot.on('speak', function (data) {
 				});
 			}, 500);
 			break;
-
-
+		
+		
 		//--------------------------------------
 		//ADMIN-ONLY COMMANDS
 		//--------------------------------------
@@ -782,7 +789,9 @@ bot.on('speak', function (data) {
 				bot.speak('You aint mah master!');
 			}
 			break;
-
+		case 'DJs':
+			bot.speak(checkDjCount()+' Djs');
+		break;
 		//Step down if DJing
 		case 'ST, step down':
 			if (admincheck(data.userid)) {
@@ -913,7 +922,7 @@ bot.on('speak', function (data) {
 
 //Runs when no song is playing.
 bot.on('nosong', function (data) {
-	//
+	bot.addDj();
 });
 
 //Runs at the end of a song
@@ -937,6 +946,12 @@ bot.on('endsong', function (data) {
 //Populates currentsong data, tells bot to step down if it just played a song,
 //logs new song in console, auto-awesomes song
 bot.on('newsong', function (data) {
+	if(checkDjCount() < 2) {
+		bot.addDj();
+	} else {
+		bot.remDj();
+	}
+	
 	//Populate new song data in currentsong
 	currentsong.artist = data.room.metadata.current_song.metadata.artist;
 	currentsong.song = data.room.metadata.current_song.metadata.song;
@@ -953,15 +968,16 @@ bot.on('newsong', function (data) {
 		bot.speak('NO.');
 	}
 
+		
 	//Enforce stepdown rules
 	if (usertostep != null) {
 		if (usertostep == config.USERID) {
-			bot.remDj(config.USERID);
+			//bot.remDj(config.USERID);
 		} else if (config.oneDownEnforce) {
 			enforceRoom();
 		}
 	}
-
+	
 	//Log in console
 	if (config.logConsoleEvents) {
 		console.log('Now Playing: '+currentsong.artist+' - '+currentsong.song);
@@ -985,7 +1001,7 @@ bot.on('newsong', function (data) {
 			bot.speak('SAIL!');
 		}, 34500);
 	}
-
+	
 	//--------------------------------------
 	// REPTAR SINGALONGS
 	//--------------------------------------
