@@ -8,7 +8,6 @@
  *  Based on bot implementations by alaingilbert, anamorphism, and heatvision
  *  Uses node.js with modules ttapi, node_mysql, request
  * 
- *  Run: 'node sparkle.js'
  *  
  *  Make sure parameters in config.js are set before running.
  *  Make sure a mysql server instance is running before starting the bot.
