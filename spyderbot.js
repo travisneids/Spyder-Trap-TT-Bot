@@ -3,7 +3,8 @@
  *  Author: Travis Neiderhiser
  *  Version: [dev] 2012.01.12
  *  
- *  Original script created by sharedferret https://github.com/sharedferret/Sparkle-Turntable-Bot - great work!  This is a version made specifically for the Spyder Trap room.
+ *  Original script created by sharedferret https://github.com/sharedferret/Sparkle-Turntable-Bot - great work!  
+ *  This is a version made specifically for the Spyder Trap room.
  *  Based on bot implementations by alaingilbert, anamorphism, and heatvision
  *  Uses node.js with modules ttapi, node_mysql, request
  * 
