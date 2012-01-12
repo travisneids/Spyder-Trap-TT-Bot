@@ -100,29 +100,6 @@ function admincheck(userid) {
 	return false;
 }
 
-//The bot will respond to a Reptar call with a variant of 'rawr!' based on
-//the result from a RNG.
-function reptarCall() {
-	var rand = Math.random();
-	if (rand < 0.05) {
-		bot.speak('That band is pretty awesome.');
-	} else if (rand < 0.10) {
-		bot.speak('Good morning!');
-	} else if (rand < 0.18) {
-		bot.speak('Rawr!');
-	} else if (rand < 0.3) {
-		bot.speak('rawr!');
-	} else if (rand < 0.4) {
-		bot.speak('RAWR!');
-	} else if (rand < 0.5) {
-		bot.speak('rawr.');
-	} else if (rand < 0.6) {
-		bot.speak('RAWR!!!');
-	} else {
-		bot.speak('.reptar');
-	}
-}
-
 //Adds the song data to the songdata table.
 //This runs on the endsong event.
 function addToDb(data) {
@@ -339,7 +316,7 @@ bot.on('speak', function (data) {
 		//--------------------------------------
 	
 		case '.sparklecommands':
-			bot.speak('commands: .users, .owner, .source, rules, ping, reptar, '
+			bot.speak('commands: .users, .owner, .source, rules, ping, '
 				+ 'mostplayed, mostawesomed, mostlamed, mymostplayed, '
 				+ 'mymostawesomed, mymostlamed, totalawesomes, dbsize, '
 				+ 'pastnames [username], .similar, .similarartists, '
@@ -348,7 +325,7 @@ bot.on('speak', function (data) {
 
 		case 'help':
 		case 'commands':
-			bot.speak('commands: .ad, ping, reptar, merica, .random, .facebook, '
+			bot.speak('commands: .ad, ping, merica, .random, .facebook, '
 				+ '.twitter, .rules, .users, .owner, .source, mostplayed, '
 				+ 'mostawesomed, mymostplayed, mymostawesomed, '
 				+ 'pastnames [username], .similar, .similarartists');
@@ -423,13 +400,6 @@ bot.on('speak', function (data) {
 			//bot.boot('4e1c82d24fe7d0313f0be9a7'); //boot kirby
 			//bot.boot('4e3b6a804fe7d0578d003859', 'didn\'t awesome tpc'); //boot vic
 			break;
-
-		//Responds to reptar-related call
-		case 'CAN YOU FEEL IT!?':
-			setTimeout(function() {
-				bot.speak('IN MAH PANTS!');
-			}, 1200);
-			break;
 			
 		case 'I enjoy that band.':
 			setTimeout(function() {
@@ -445,7 +415,7 @@ bot.on('speak', function (data) {
 		//Outputs github url for SparkleBot
 		case '.source':
 			bot.speak('My source code is available at: '
-				+ 'https://github.com/sharedferret/Sparkle-Turntable-Bot');
+				+ 'https://github.com/neidz11/Spyder-Trap-TT-Bot');
 			break;
 
 		//Ping bot
@@ -459,13 +429,7 @@ bot.on('speak', function (data) {
 			}
 			break;
 
-		//Reptar call!
-		//Randomly picks a response in reptarCall()
-		case 'reptar':
-			reptarCall();
-			break;
-
-		//Rules rehash since xxRAWRxx only responds to .rules
+		//Rules for the room
 		case 'rules':
 			bot.speak('No rules.  Enjoy our room!');
 			setTimeout(function() {
@@ -474,9 +438,11 @@ bot.on('speak', function (data) {
 			break;
 
 		//hugs support.
-		//Change xxMEOWxx, meow etc to bot name
 		case 'hugs xxSpyderTrapxx':
 		case 'hugs spyder':
+		case 'hug spyder':
+		case 'hugs spyder trap':
+		case 'hug spyder trap':
 			var rand = Math.random();
 			var timetowait = 1600;
 			if (rand < 0.4) {
@@ -489,7 +455,10 @@ bot.on('speak', function (data) {
 				bot.speak('hugs ' + data.name);
 			}, timetowait);
 			break;
-			
+		case 'best development shop?':
+		case 'Best development shop?':
+			bot.speak('SPYDER TRAP! BOP BOP BEE BOOP');
+		break;
 		//--------------------------------------
 		//HTTP REST QUERIES
 		//--------------------------------------
@@ -741,14 +710,6 @@ bot.on('speak', function (data) {
 			}, 500);
 			break;
 
-		//Bot freakout
-		case 'reptar sucks':
-			bot.speak('OH NO YOU DIDN\'T');
-			setTimeout(function() {
-				reptarCall();
-			}, 1000);
-			break;
-			
 
 		//--------------------------------------
 		//ADMIN-ONLY COMMANDS
@@ -798,14 +759,16 @@ bot.on('speak', function (data) {
 			break;
 
 		//Changes room
-		case 'ST, go to IAS':
+		case 'ST, go home':
 			if (data.userid == config.MAINADMIN) {
+				bot.speak('*Hangs Head* Oh fine!');
 				bot.roomDeregister();
-				bot.roomRegister(config.IASROOMID);
+				bot.roomRegister(config.MYROOMID);
 			}
 			break;
-		case 'ST, go to Reptar Room':
+		case 'ST, go to Indie Room':
 			if (data.userid == config.MAINADMIN) {
+				bot.speak('Hipster time!');
 				bot.roomDeregister();
 				bot.roomRegister(config.ROOMID);
 			}
