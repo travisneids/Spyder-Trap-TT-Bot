@@ -792,6 +792,10 @@ bot.on('speak', function (data) {
 		case 'DJs':
 			bot.speak(checkDjCount()+' Djs');
 		break;
+		case 'ST, seriously?':
+			bot.speak('Oh fine!');
+			bot.skip();
+		break;
 		//Step down if DJing
 		case 'ST, step down':
 			if (admincheck(data.userid)) {
@@ -928,6 +932,12 @@ bot.on('nosong', function (data) {
 //Runs at the end of a song
 //Logs song in database, reports song stats in chat
 bot.on('endsong', function (data) {
+	//autodj
+	if(checkDjCount() <= 2) {
+		bot.addDj();
+	} else {
+		bot.remDj();
+	}
 	//Log song in DB
 	addToDb();
 
@@ -946,7 +956,7 @@ bot.on('endsong', function (data) {
 //Populates currentsong data, tells bot to step down if it just played a song,
 //logs new song in console, auto-awesomes song
 bot.on('newsong', function (data) {
-	if(checkDjCount() < 2) {
+	if(checkDjCount() <= 2) {
 		bot.addDj();
 	} else {
 		bot.remDj();
