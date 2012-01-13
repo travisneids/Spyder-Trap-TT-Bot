@@ -843,6 +843,33 @@ bot.on('speak', function (data) {
 			}}
         });
 	}
+
+	if(text.match(/^mysongs/)) {
+		//Returns the user's last 3 (or X for arg) songs played
+		var argStr = text.replace(/^mysongs\s+/);
+		
+  	numSongs = 3;
+		if (argStr.match(/\d+/)) {
+      numSongs = argStr;
+      
+  		// sanity check to prevent huge chat dump - 20 max
+  		if (numSongs > 20) {
+  		  numSongs = 3;
+  		}
+  	}
+		
+		client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, DATE_FORMAT(started, \'%a %l-%d %e:%i %p\') AS started_fmt FROM '
+		+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
+		+ ' ORDER BY started DESC LIMIT ' + numSongs ,
+		function select(error, results, fields) {
+			var response = 'The last songs I\'ve heard you play are:<br /><br />';
+			for (i in results) {
+				response += results[i]['TRACK'] + ' on: '
+					+ results[i]['started_fmt'] + '<br />';
+			}
+			bot.speak(response);
+		});
+	};
 	
 	if(text.match(/^.find/)) {
 		var location = text.split(' ', 2);
