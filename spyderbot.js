@@ -648,20 +648,6 @@ bot.on('speak', function (data) {
 				bot.speak(response);
 			});
 		break;
-		//Returns the user's last 5 songs played
-		case 'mysongs':
-			client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, started FROM '
-			+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
-			+ ' ORDER BY started DESC LIMIT 5' ,
-			function select(error, results, fields) {
-				var response = 'The last songs I\'ve heard you play are: ';
-				for (i in results) {
-					response += results[i]['TRACK'] + ' on: '
-						+ results[i]['started'];
-				}
-				bot.speak(response);
-			});
-		break;
 		//Returns the user's three most-lamed songs (aggregate)
 		case 'mymostlamed':
 			client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, SUM(down) AS SUM FROM '
@@ -862,12 +848,10 @@ bot.on('speak', function (data) {
 		+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
 		+ ' ORDER BY started DESC LIMIT ' + numSongs ,
 		function select(error, results, fields) {
-			var response = 'The last songs I\'ve heard you play are:<br /><br />';
+			bot.speak('The last songs I\'ve heard you play are:');
 			for (i in results) {
-				response += results[i]['TRACK'] + ' on: '
-					+ results[i]['started_fmt'] + '<br />';
+				bot.speak(results[i]['TRACK'] + ' on: ' + results[i]['started_fmt']);
 			}
-			bot.speak(response);
 		});
 	};
 	
