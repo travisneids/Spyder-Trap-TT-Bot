@@ -832,7 +832,7 @@ bot.on('speak', function (data) {
 
 	if(text.match(/^mysongs/)) {
 		//Returns the user's last 3 (or X for arg) songs played
-		var argStr = text.replace(/^mysongs\s+/);
+		var argStr = text.replace(/^mysongs\s+/, '');
 		
   	numSongs = 3;
 		if (argStr.match(/\d+/)) {
@@ -848,9 +848,11 @@ bot.on('speak', function (data) {
 		+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
 		+ ' ORDER BY started DESC LIMIT ' + numSongs ,
 		function select(error, results, fields) {
-			bot.speak('The last songs I\'ve heard you play are:');
+			timeoutVal = 100;
+			setTimeout(function () { bot.speak('The last songs I\'ve heard you play are:') }, timeoutVal);
 			for (i in results) {
-				bot.speak(results[i]['TRACK'] + ' on: ' + results[i]['started_fmt']);
+			  timeoutVal += 100;
+				setTimeout(function () { bot.speak(results[i]['TRACK'] + ' on: ' + results[i]['started_fmt']) }, timeoutVal);
 			}
 		});
 	};
