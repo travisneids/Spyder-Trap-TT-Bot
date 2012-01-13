@@ -118,7 +118,7 @@ function autoDj() {
 		//Only DJ if there isn't enough DJs
 		if(checkDjCount() < 2) {
 			bot.addDj();
-		} else if(checkDjCount() >= 2){
+		} else if(checkDjCount() > 2){
 			bot.remDj();
 		}
 	}
