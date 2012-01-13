@@ -1,7 +1,7 @@
 /**
  *  spyderbot.js
  *  Author: Travis Neiderhiser
- *  Version: [dev] 2012.01.12
+ *  Version: [dev] 2012.01.13
  *  
  *  Original script created by sharedferret https://github.com/sharedferret/Sparkle-Turntable-Bot - great work!  
  *  This is a version made specifically for the Spyder Trap room.
