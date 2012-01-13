@@ -77,6 +77,8 @@ var usertostep;
 var userstepped = false;
 var djsCount;
 
+var josh;
+
 //Used for bonus awesoming
 var bonuspoints = new Array();
 
