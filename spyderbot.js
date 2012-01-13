@@ -110,7 +110,19 @@ function checkDjCount() {
 	}
 	return djsCount;
 }
-
+//AutoDJ Function
+var manualDj = false;
+function autoDj() {
+	//Told to DJ?
+	if(manualDj == false) {
+		//Only DJ if there isn't enough DJs
+		if(checkDjCount() < 2) {
+			bot.addDj();
+		} else if(checkDjCount() >= 2){
+			bot.remDj();
+		}
+	}
+}
 //Adds the song data to the songdata table.
 //This runs on the endsong event.
 function addToDb(data) {
@@ -746,6 +758,7 @@ bot.on('speak', function (data) {
 		//Step up to DJ
 		case 'ST, step up':
 			if (admincheck(data.userid)) {
+				manualDj = true;
 				bot.addDj();
 			} else {
 				bot.speak('You aint mah master!');
@@ -761,6 +774,7 @@ bot.on('speak', function (data) {
 		//Step down if DJing
 		case 'ST, step down':
 			if (admincheck(data.userid)) {
+				manualDj = false;
 				bot.remDj(config.USERID);
 			} else {
 				bot.speak('You aint mah master!');
@@ -866,7 +880,7 @@ bot.on('speak', function (data) {
 
 //Runs when no song is playing.
 bot.on('nosong', function (data) {
-	bot.addDj();
+	autoDj();
 });
 
 //Runs at the end of a song
@@ -921,6 +935,7 @@ bot.on('newsong', function (data) {
 //Runs when a dj steps down
 //Logs in console
 bot.on('rem_dj', function (data) {
+	autoDj();
 	//Log in console
 	//console.log(data.user[0]);
 	if (config.logConsoleEvents) {
@@ -938,6 +953,7 @@ bot.on('rem_dj', function (data) {
 //Runs when a dj steps up
 //Logs in console
 bot.on('add_dj', function(data) {
+	autoDj();
 	//Log in console
 	if (config.logConsoleEvents) {
 		console.log('Stepped up: ' + data.user[0].name);
