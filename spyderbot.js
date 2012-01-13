@@ -110,6 +110,7 @@ function checkDjCount() {
 	}
 	return djsCount;
 }
+
 //Adds the song data to the songdata table.
 //This runs on the endsong event.
 function addToDb(data) {
@@ -125,21 +126,6 @@ function addToDb(data) {
 		currentsong.down, 
 		currentsong.listeners, 
 		new Date()]);
-}
-
-//Reminds a user that has just played a song to step down, and pulls them
-//off stage if they do not step down.
-function enforceRoom() {
-	setTimeout( function() {
-		if(!userstepped) {
-			bot.speak(usersList[usertostep].name + ', please step down');
-			setTimeout( function() {
-				if(!userstepped) {
-					bot.remDj(usertostep);
-				}
-			}, 19000);
-		}
-	}, 15000);
 }
 
 function getTarget() {
@@ -276,15 +262,7 @@ bot.on('registered',   function (data) {
 	//Displays custom greetings for certain members
 	if(config.welcomeUsers) {
 		if (!user.name.match(/^ttdashboard/)) {
-			client.query('SELECT greeting FROM HOLIDAY_GREETINGS WHERE '
-				+ 'date LIKE CURDATE()',
-				function cbfunc(error, results, fields) {
-					if (results[0] != null) {
-						bot.speak(results[0]['greeting'] + ', ' + user.name + '!');
-					} else {
-						bot.speak(config.welcomeGreeting + user.name + '!');
-					}
-			});
+			bot.speak('Welcome, ' + user.name + '!');
 		}
 	}
 });
@@ -324,20 +302,13 @@ bot.on('speak', function (data) {
 		//--------------------------------------
 		//COMMAND LISTS
 		//--------------------------------------
-		case '.sparklecommands':
-			bot.speak('commands: .users, .owner, .source, rules, ping, '
-				+ 'mostplayed, mostawesomed, mostlamed, mymostplayed, '
-				+ 'mymostawesomed, mymostlamed, totalawesomes, dbsize, '
-				+ 'pastnames [username], .similar, .similarartists, '
-				+ '.weather [zip], .find ');
-			break;
 
 		case 'help':
 		case 'commands':
-			bot.speak('commands: .ad, ping, merica, .random, .facebook, '
-				+ '.twitter, .rules, .users, .owner, .source, mostplayed, '
+			bot.speak('commands: ping, facebook, '
+				+ 'twitter, rules, users, owner, source, mostplayed, '
 				+ 'mostawesomed, mymostplayed, mymostawesomed, '
-				+ 'pastnames [username], .similar, .similarartists');
+				+ 'pastnames [username], similar, similarartists');
 			break;
 
 		//Bonus points
@@ -388,7 +359,7 @@ bot.on('speak', function (data) {
 		//--------------------------------------
 
 		//Displays a list of users in the room
-		case '.users':
+		case 'users':
 			var numUsers = 0;
 			var output = '';
 			for (var i in usersList) {
@@ -399,17 +370,6 @@ bot.on('speak', function (data) {
 				+ output.substring(0,output.length - 2));
 			break;
 
-		//Boots user 'thisiskirby'
-		//Booted user changed by changing userid in bot.boot()
-		case 'antiquing':
-		case 'antiquing?':
-			bot.speak('\"Antiquing\" is the act of shopping, identifying, negotiating, or '
-				+ 'bargaining for antiques. Items can be bought for personal use, gifts, and '
-				+ 'in the case of brokers and dealers, profit.');
-			//bot.boot('4e1c82d24fe7d0313f0be9a7'); //boot kirby
-			//bot.boot('4e3b6a804fe7d0578d003859', 'didn\'t awesome tpc'); //boot vic
-			break;
-			
 		case 'I enjoy that band.':
 			setTimeout(function() {
 				bot.speak('They areeee delicious!');
@@ -417,12 +377,12 @@ bot.on('speak', function (data) {
 			break;
 
 		//Outputs bot owner
-		case '.owner':
+		case 'owner':
 			bot.speak(config.ownerResponse);
 			break;
 
 		//Outputs github url for SparkleBot
-		case '.source':
+		case 'source':
 			bot.speak('My source code is available at: '
 				+ 'https://github.com/neidz11/Spyder-Trap-TT-Bot');
 			break;
@@ -474,7 +434,7 @@ bot.on('speak', function (data) {
 
 		//Returns three similar songs to the one playing.
 		//Uses last.fm's API
-        case '.similar':
+        case 'similar':
         	if (config.uselastfmAPI) {
 				request('http://ws.audioscrobbler.com/2.0/?method=track.getSimilar'
 					+ '&artist=' + encodeURIComponent(currentsong.artist)
@@ -509,7 +469,7 @@ bot.on('speak', function (data) {
 	
 		//Returns three similar artists to the one playing.
 		//Uses last.fm's API
-		case '.similarartists':
+		case 'similarartists':
 			if (config.uselastfmAPI) {
 				request('http://ws.audioscrobbler.com/2.0/?method=artist.getSimilar'
                 	+ '&artist=' + encodeURIComponent(currentsong.artist)
@@ -819,28 +779,6 @@ bot.on('speak', function (data) {
 				bot.speak('You ain\'t no jedi!');
 			}
 			break;
-		//Bot freakout
-		case 'OH MY GOD ST':
-			if (admincheck(data.userid)) {
-				reptarCall();
-				setTimeout(function() {
-					reptarCall();
-				}, 1400);
-				setTimeout(function() {
-					reptarCall();
-				}, 2800);
-				setTimeout(function() {
-					reptarCall();
-				}, 4200);
-				setTimeout(function() {
-					reptarCall();
-				}, 5600);
-				setTimeout(function() {
-					reptarCall();
-				}, 7000);
-			}
-			break;
-
 		//Shuts down bot (only the main admin can run this)
 		//Disconnects from room, exits process.
 		case 'ST, shut down':
@@ -934,12 +872,6 @@ bot.on('nosong', function (data) {
 //Runs at the end of a song
 //Logs song in database, reports song stats in chat
 bot.on('endsong', function (data) {
-	//autodj
-	if(checkDjCount() <= 2) {
-		bot.addDj();
-	} else {
-		bot.remDj();
-	}
 	//Log song in DB
 	addToDb();
 
@@ -957,13 +889,7 @@ bot.on('endsong', function (data) {
 //Runs when a new song is played
 //Populates currentsong data, tells bot to step down if it just played a song,
 //logs new song in console, auto-awesomes song
-bot.on('newsong', function (data) {
-	if(checkDjCount() <= 2) {
-		bot.addDj();
-	} else {
-		bot.remDj();
-	}
-	
+bot.on('newsong', function (data) {	
 	//Populate new song data in currentsong
 	currentsong.artist = data.room.metadata.current_song.metadata.artist;
 	currentsong.song = data.room.metadata.current_song.metadata.song;
@@ -973,23 +899,7 @@ bot.on('newsong', function (data) {
 	currentsong.down = data.room.metadata.downvotes;
 	currentsong.listeners = data.room.metadata.listeners;
 	currentsong.started = data.room.metadata.current_song.starttime;
-
-	//Check something
-	if ((currentsong.artist.indexOf('Skrillex') != -1) || (currentsong.song.indexOf('Skrillex') != -1)) {
-		bot.remDj(currentsong.djid);
-		bot.speak('NO.');
-	}
-
 		
-	//Enforce stepdown rules
-	if (usertostep != null) {
-		if (usertostep == config.USERID) {
-			//bot.remDj(config.USERID);
-		} else if (config.oneDownEnforce) {
-			enforceRoom();
-		}
-	}
-	
 	//Log in console
 	if (config.logConsoleEvents) {
 		console.log('Now Playing: '+currentsong.artist+' - '+currentsong.song);
@@ -1006,57 +916,6 @@ bot.on('newsong', function (data) {
 	//Reset bonus points
 	bonuspoints = new Array();
 	
-
-	//SAIL!
-	if((currentsong.artist == 'AWOLNATION') && (currentsong.song == 'Sail') && config.botSing) {
-		setTimeout(function() {
-			bot.speak('SAIL!');
-		}, 34500);
-	}
-	
-	//--------------------------------------
-	// REPTAR SINGALONGS
-	//--------------------------------------
-
-	//CAN YOU FEEL IT?
-	if(currentsong.song == 'Houseboat Babies' && config.botSing) {
-		setTimeout(function() {
-			bot.speak('CAN YOU FEEL IT?')	;
-		}, 86000);
-		setTimeout(function() {
-			bot.speak('YES I CAN FEEL IT');
-		}, 88500);
-		setTimeout(function() {
-			bot.speak('When I\'m at Jenny\'s house');
-		}, 90000);
-		setTimeout(function() {
-			bot.speak('I look for bad ends');
-		}, 93500);
-		setTimeout(function() {
-			bot.speak('Forget your parents!');
-		}, 96000);
-		setTimeout(function() {
-			bot.speak('But it\'s just cat and mouse!');
-		}, 98500);
-	}
-
-	if((currentsong.artist == 'Reptar') && (currentsong.song == 'Blastoff') && config.botSing) {
-		setTimeout(function() {
-			bot.speak('Well I won\'t call you!');
-		}, 184000);
-		setTimeout(function() {
-			bot.speak('If you don\'t call me!');
-		}, 186000);
-		setTimeout(function() {
-			bot.speak('No no I won\'t call you!');
-		}, 188000);
-		setTimeout(function() {
-			bot.speak('If you don\'t call me!');
-		}, 190000);
-		setTimeout(function() {
-			bot.speak('Yeah!');
-		}, 192000);
-	}
 });
 
 //Runs when a dj steps down
@@ -1066,13 +925,6 @@ bot.on('rem_dj', function (data) {
 	//console.log(data.user[0]);
 	if (config.logConsoleEvents) {
 		console.log('Stepped down: '+ data.user[0].name + ' [' + data.user[0].userid + ']');
-	}
-
-	//Adds user to 'step down' vars
-	//Used by enforceRoom()
-	if (usertostep == data.user[0].userid) {
-		userstepped = true;
-		usertostep = null;
 	}
 
 	//Remove from dj list
