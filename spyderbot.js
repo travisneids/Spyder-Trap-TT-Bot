@@ -697,6 +697,7 @@ bot.on('speak', function (data) {
 		case '\.a':
 			if (admincheck(data.userid)) {
 				bot.vote('up');
+				bot.speak('Sick!');
 			}
 			break;
 
@@ -704,6 +705,7 @@ bot.on('speak', function (data) {
 		case '\.l':
 			if (admincheck(data.userid)) {
 				bot.vote('down');
+				bot.speak('Boo!');
 			}
 			break;
 
