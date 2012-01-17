@@ -816,7 +816,7 @@ bot.on('speak', function (data) {
 		//Shuts down bot (only the main admin can run this)
 		//Disconnects from room, exits process.
 		case 'ST, shut down':
-			if (data.userid == config.MAINADMIN) {
+			if (admincheck(data.userid)) {
 				bot.roomDeregister();
 				process.exit(0);
 			}
