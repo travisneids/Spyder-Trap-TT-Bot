@@ -371,7 +371,7 @@ bot.on('speak', function (data) {
     //doofy /roll wow-like command
 		case '/roll':
 			var myRoll = Math.floor(Math.random() * 101);
-			bot.speak(name + '. rolls a: ' + myRoll + '!');
+			bot.speak(name + ' rolls a ' + myRoll + '!');
 			if (myRoll == 100) {
   			setTimeout(function() {
   				bot.speak('You win!');
