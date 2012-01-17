@@ -328,6 +328,7 @@ bot.on('speak', function (data) {
 			bot.speak('Bot love Jeff!  Bot add point for love of Jeff.');
 		case 'stboom':
 		case 'bonus':
+		case '/bonus':
 		case 'good dong':
 		case 'awesome':
 		case 'good song':
@@ -338,6 +339,7 @@ bot.on('speak', function (data) {
 		case 'dance':
 		case '/dance':
 		case 'tromboner':
+		case '+1':
 			if (bonuspoints.indexOf(data.name) == -1) {
 				bonuspoints.push(data.name);
 
@@ -364,6 +366,17 @@ bot.on('speak', function (data) {
 				test += bonuspoints[i] + ', ';
 			}
 			bot.speak(test);
+			break;
+
+    //doofy /roll wow-like command
+		case '/roll':
+			var myRoll = Math.floor(Math.random() * 101);
+			bot.speak(name + '. rolls a: ' + myRoll + '!');
+			if (myRoll == 100) {
+  			setTimeout(function() {
+  				bot.speak('You win!');
+  			}, 1200);
+			}
 			break;
 			
 		//--------------------------------------
