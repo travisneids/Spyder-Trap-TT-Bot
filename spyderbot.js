@@ -715,7 +715,13 @@ bot.on('speak', function (data) {
 				bot.speak('Sick!');
 			}
 			break;
-
+		case 'admindebug':
+			if(admincheck(data.userid)) {
+				for (i in config.admins) {
+					bot.speak('User ID: '+config.admins[i]);
+				}
+			}
+		break;
 		//Tells bot to lame the current song
 		case '\.l':
 			if (admincheck(data.userid)) {
