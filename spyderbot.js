@@ -88,7 +88,8 @@ var currentsong = {
 	djid: null,
 	up: 0,
 	down: 0,
-	listeners: 0};
+	listeners: 0,
+	songid: null};
 
 //Checks if the user id is present in the admin list. Authentication
 //for admin-only privileges.
@@ -127,7 +128,7 @@ function addToDb(data) {
 	client.query(
 		'INSERT INTO '+ config.SONG_TABLE +' '
 		+ 'SET artist = ?,song = ?, djname = ?, djid = ?, up = ?, down = ?,'
-		+ 'listeners = ?, started = ?',
+		+ 'listeners = ?, started = ?, songid = ?',
 		[currentsong.artist, 
 		currentsong.song, 
 		currentsong.djname, 
@@ -135,7 +136,8 @@ function addToDb(data) {
 		currentsong.up, 
 		currentsong.down, 
 		currentsong.listeners, 
-		new Date()]);
+		new Date(),
+		currentsong.songid]);
 }
 
 function getTarget() {
@@ -208,6 +210,7 @@ bot.on('roomChanged', function(data) {
 		currentsong.up        = data.room.metadata.upvotes;
 		currentsong.down      = data.room.metadata.downvotes;
 		currentsong.listeners = data.room.metadata.listeners;
+		currentsong.songid = data.room.metadata.current_song._id;
 	}
 
 	//Creates the dj list
@@ -783,7 +786,7 @@ bot.on('speak', function (data) {
 		case 'ST, you like this song':
 			if(admincheck(data.userid)) {
 				bot.roomInfo(true, function(data) {
-     				 var newSong = data.room.metadata.current_song._id;
+     				var newSong = data.room.metadata.current_song._id;
       				var newSongName = songName = data.room.metadata.current_song.metadata.song;
       				bot.playlistAdd(newSong);
 					bot.speak('I love '+newSongName+' !');
@@ -937,7 +940,9 @@ bot.on('newsong', function (data) {
 	currentsong.down = data.room.metadata.downvotes;
 	currentsong.listeners = data.room.metadata.listeners;
 	currentsong.started = data.room.metadata.current_song.starttime;
-		
+	
+	//Add song id to DB
+	
 	//Log in console
 	if (config.logConsoleEvents) {
 		console.log('Now Playing: '+currentsong.artist+' - '+currentsong.song);
