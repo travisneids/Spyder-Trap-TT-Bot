@@ -210,7 +210,6 @@ bot.on('roomChanged', function(data) {
 		currentsong.up        = data.room.metadata.upvotes;
 		currentsong.down      = data.room.metadata.downvotes;
 		currentsong.listeners = data.room.metadata.listeners;
-		currentsong.songid = data.room.metadata.current_song._id;
 	}
 
 	//Creates the dj list
@@ -940,6 +939,7 @@ bot.on('newsong', function (data) {
 	currentsong.down = data.room.metadata.downvotes;
 	currentsong.listeners = data.room.metadata.listeners;
 	currentsong.started = data.room.metadata.current_song.starttime;
+	currentsong.songid = data.room.metadata.current_song._id;
 	
 	//Add song id to DB
 	
