@@ -175,7 +175,7 @@ bot.on('ready', function (data) {
 		+ ' djid VARCHAR(255),'
 		+ ' up INT(3),' + ' down INT(3),'
 		+ ' listeners INT(3),'
-		+ ' started DATETIME)'
+		+ ' started DATETIME,'
 		+ ' snags INT(3),'
 		+ ' bonus INT(3),'
 		+ ' songid VARCHAR(255))',
