@@ -314,8 +314,10 @@ bot.on('speak', function (data) {
 		+ 'SET user = ?, userid = ?, chat = ?, time = ?',
 		[data.name, data.userid, data.text, new Date()]);
 
-	//If it's a supported command, handle it (now case-INsensitive)
-	switch(text.toLowerCase()) {
+	//If it's a supported command, handle it (case-sensitive)
+	//If want case in-sensitive replace with this line and lower-case all the case texts below:
+	//switch(text.toLowerCase()) {
+	switch(text) {
 		//--------------------------------------
 		//COMMAND LISTS
 		//--------------------------------------
@@ -919,6 +921,7 @@ bot.on('speak', function (data) {
 		//Disconnects from room, exits process.
 		case 'ST, shut down':
 			if (admincheck(data.userid)) {
+        bot.speak('Sorry I upset you master');
 				bot.roomDeregister();
 				process.exit(0);
 			}
