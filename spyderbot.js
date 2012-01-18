@@ -376,6 +376,11 @@ bot.on('speak', function (data) {
 			}
 			bot.speak(test);
 			break;
+			
+		case 'fail':
+		case '/fail':
+		  bot.speak(name + ' is fail!');
+		  break;
 
     //doofy /roll wow-like command
 		case '/roll':
@@ -944,7 +949,7 @@ bot.on('speak', function (data) {
         	        if (!error && response.statusCode == 200) {
         	                var formatted = eval('(' + body + ')');
         	        	try {
-						var loc = formatted.query.results.weather.rss.channel.location.city + ', '
+                      var loc = formatted.query.results.weather.rss.channel.location.city + ', '
         	            if (formatted.query.results.weather.rss.channel.location.region != '') {
         	            	loc += formatted.query.results.weather.rss.channel.location.region;
         	            } else {
@@ -972,10 +977,12 @@ bot.on('speak', function (data) {
         numSongs = 3;
       }
     }
+    
+    bot.speak('numSongs is: ' + numSongs);
 		
 		client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, DATE_FORMAT(started, \'%a %l-%d %e:%i %p\') AS started_fmt FROM '
-		+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
-		+ ' ORDER BY started DESC LIMIT ' + numSongs ,
+  		+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
+  		+ ' ORDER BY started DESC LIMIT ' + numSongs ,
 		function select(error, results, fields) {
 			timeoutVal = 100;
 			setTimeout(function () { bot.speak('The last songs I\'ve heard you play are:') }, timeoutVal);
