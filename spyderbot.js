@@ -324,9 +324,10 @@ bot.on('speak', function (data) {
 
 		case 'help':
 		case 'commands':
-			bot.speak('commands: ping, facebook, '
-				+ 'twitter, rules, users, owner, source, mostplayed, '
-				+ 'mostawesomed, mymostplayed, mymostawesomed, '
+			bot.speak('commands: rules, ping, facebook, twitter, users, owner, source, /roll, '
+				+ 'platforms, past24hours, totalawesomes, bestplays, bestdjs, worstdjs, dbsize, '
+				+ 'stats, mostplayed, mostawesomed, mostlamed, mostsnagged, '
+				+ 'mystats, mymostplayed, mymostawesomed, mymostlamed, mymostsnagged, myartists, mysongs [count]'
 				+ 'pastnames [username], similar, similarartists');
 			break;
 
@@ -962,15 +963,15 @@ bot.on('speak', function (data) {
 		//Returns the user's last 3 (or X for arg) songs played
 		var argStr = text.replace(/^mysongs\s+/, '');
 		
-  	numSongs = 3;
-		if (argStr.match(/\d+/)) {
+    numSongs = 3;
+    if (argStr.match(/\d+/)) {
       numSongs = argStr;
       
-  		// sanity check to prevent huge chat dump - 20 max
-  		if (numSongs > 20) {
-  		  numSongs = 3;
-  		}
-  	}
+      // sanity check to prevent huge chat dump - 20 max
+      if (numSongs > 20) {
+        numSongs = 3;
+      }
+    }
 		
 		client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, DATE_FORMAT(started, \'%a %l-%d %e:%i %p\') AS started_fmt FROM '
 		+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
