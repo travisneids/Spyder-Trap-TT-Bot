@@ -550,18 +550,16 @@ bot.on('speak', function (data) {
 		//Returns the room's play count, total awesomes/lames, and average awesomes/lames
 		//in the room
 		case 'stats':
-			if (config.useDatabase) {
-				client.query('SELECT count(*) as total, sum(up) as up, avg(up) as avgup, '
-					+ 'sum(down) as down, avg(down) as avgdown FROM ' + config.SONG_TABLE,
-					function select(error, results, fields) {
-						bot.speak('In this room, '
-							+ results[0]['total'] + ' songs have been played with a total of '
-							+ results[0]['up'] + ' awesomes and ' + results[0]['down']
-							+ ' lames (avg +' + new Number(results[0]['avgup']).toFixed(1) 
-							+ '/-' + new Number(results[0]['avgdown']).toFixed(1)
-							+ ').');
-				});
-			}
+			client.query('SELECT count(*) as total, sum(up) as up, avg(up) as avgup, '
+				+ 'sum(down) as down, avg(down) as avgdown FROM ' + config.SONG_TABLE,
+				function select(error, results, fields) {
+					bot.speak('In this room, '
+						+ results[0]['total'] + ' songs have been played with a total of '
+						+ results[0]['up'] + ' awesomes and ' + results[0]['down']
+						+ ' lames (avg +' + new Number(results[0]['avgup']).toFixed(1) 
+						+ '/-' + new Number(results[0]['avgdown']).toFixed(1)
+						+ ').');
+			});
 			break;
 
 		//Returns the total number of awesomes logged in the songlist table
@@ -590,19 +588,17 @@ bot.on('speak', function (data) {
 
 		//Returns the three DJs with the most points in the last 24 hours
 		case 'past24hours':
-			if (config.useDatabase) {
-				client.query('SELECT djname, sum(up) AS upvotes FROM ' + config.SONG_TABLE
-					+ ' WHERE started > DATE_SUB(NOW(), INTERVAL 1 DAY) GROUP BY djid '
-					+ 'ORDER BY sum(up) DESC LIMIT 3',
-					function select(error, results, fields) {
-						var response = 'DJs with the most points in the last 24 hours: ';
-						for (i in results) {
-							response += results[i]['djname'] + ': '
-								+ results[i]['upvotes'] + ' awesomes.  ';
-						}
-						bot.speak(response);
-				});
-			}
+			client.query('SELECT djname, sum(up) AS upvotes FROM ' + config.SONG_TABLE
+				+ ' WHERE started > DATE_SUB(NOW(), INTERVAL 1 DAY) GROUP BY djid '
+				+ 'ORDER BY sum(up) DESC LIMIT 3',
+				function select(error, results, fields) {
+					var response = 'DJs with the most points in the last 24 hours: ';
+					for (i in results) {
+						response += results[i]['djname'] + ': '
+							+ results[i]['upvotes'] + ' awesomes.  ';
+					}
+					bot.speak(response);
+			});
 			break;
 		
 		//Returns the three DJs with the most points logged in the songlist table
@@ -637,18 +633,16 @@ bot.on('speak', function (data) {
 
 			//Returns the three most-played songs in the songlist table
 		case 'mostsnagged':
-			if (config.useDatabase) {
-				client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, sum(snags) AS SNAGS FROM '
-					+ config.SONG_TABLE + ' GROUP BY CONCAT(song, \' by \', artist) ORDER BY SNAGS '
-					+ 'DESC LIMIT 3', function select(error, results, fields) {
-						var response = 'The songs I\'ve seen snagged the most: ';
-						for (i in results) {
-							response += results[i]['TRACK'] + ': '
-								+ results[i]['SNAGS'] + ' snags.  ';
-						}
-						bot.speak(response);
-				});
-			}
+			client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, sum(snags) AS SNAGS FROM '
+				+ config.SONG_TABLE + ' GROUP BY CONCAT(song, \' by \', artist) ORDER BY SNAGS '
+				+ 'DESC LIMIT 3', function select(error, results, fields) {
+					var response = 'The songs I\'ve seen snagged the most: ';
+					for (i in results) {
+						response += results[i]['TRACK'] + ': '
+							+ results[i]['SNAGS'] + ' snags.  ';
+					}
+					bot.speak(response);
+			});
 			break;
 
 		//Returns the three most-played songs in the songlist table
@@ -699,19 +693,17 @@ bot.on('speak', function (data) {
 		//Returns the user's play count, total awesomes/lames, and average awesomes/lames
 		//in the room
 		case 'mystats':
-			if (config.useDatabase) {
-				client.query('SELECT count(*) as total, sum(up) as up, avg(up) as avgup, '
-					+ 'sum(down) as down, avg(down) as avgdown '
-					+ 'FROM '+ config.SONG_TABLE + ' WHERE `djid` LIKE \'' + data.userid + '\'',
-					function select(error, results, fields) {
-						bot.speak(data.name + ', you have played '
-							+ results[0]['total'] + ' songs in this room with a total of '
-							+ results[0]['up'] + ' awesomes and ' + results[0]['down']
-							+ ' lames (avg +' + new Number(results[0]['avgup']).toFixed(1) 
-							+ '/-' + new Number(results[0]['avgdown']).toFixed(1)
-							+ ').');
-				});
-			}
+			client.query('SELECT count(*) as total, sum(up) as up, avg(up) as avgup, '
+				+ 'sum(down) as down, avg(down) as avgdown '
+				+ 'FROM '+ config.SONG_TABLE + ' WHERE `djid` LIKE \'' + data.userid + '\'',
+				function select(error, results, fields) {
+					bot.speak(data.name + ', you have played '
+						+ results[0]['total'] + ' songs in this room with a total of '
+						+ results[0]['up'] + ' awesomes and ' + results[0]['down']
+						+ ' lames (avg +' + new Number(results[0]['avgup']).toFixed(1) 
+						+ '/-' + new Number(results[0]['avgdown']).toFixed(1)
+						+ ').');
+			});
 			break;
 			
 		//Returns the user's three most played songs
