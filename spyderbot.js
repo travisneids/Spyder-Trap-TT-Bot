@@ -129,7 +129,7 @@ function addToDb(data) {
 	client.query(
 		'INSERT INTO '+ config.SONG_TABLE +' '
 		+ 'SET artist = ?,song = ?, djname = ?, djid = ?, up = ?, down = ?,'
-		+ 'listeners = ?, started = NOW, snags = ?, bonus = ?', songid = ?',
+		+ 'listeners = ?, started = NOW, snags = ?, bonus = ?, songid = ?',
 		[currentsong.artist, 
 		currentsong.song, 
 		currentsong.djname, 
