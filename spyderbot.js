@@ -735,6 +735,22 @@ bot.on('speak', function (data) {
 					bot.speak(response);
 			});
 			break;
+		
+		//Returns the user's three most-snagged songs (aggregate)
+		case 'mymostsnagged':
+			client.query('SELECT CONCAT(song,\' by \',artist) AS TRACK, SUM(snags) AS SUM FROM '
+				+ config.SONG_TABLE + ' WHERE (djid = \''+ data.userid +'\')'
+				+ ' GROUP BY CONCAT(song,\' by \',artist) ORDER BY SUM DESC LIMIT 3',
+				function select(error, results, fields) {
+					var response = 'The most snagged songs I\'ve heard from you: ';
+					for (i in results) {
+						response += results[i]['TRACK'] + ': '
+							+ results[i]['SUM'] + ' snags.  ';
+					}
+					bot.speak(response);
+			});
+			break;
+	
 		//Returns the user's three most-used artists (aggregate)
 		case 'myartists':
 			client.query('SELECT artist, COUNT(*) AS COUNT FROM '
@@ -960,7 +976,7 @@ bot.on('speak', function (data) {
 			timeoutVal = 100;
 			setTimeout(function () { bot.speak('The last songs I\'ve heard you play are:') }, timeoutVal);
 			for (i in results) {
-			  timeoutVal += 100;
+			  timeoutVal += 300;
 				setTimeout(function () { bot.speak(results[i]['TRACK'] + ' on: ' + results[i]['started_fmt']) }, timeoutVal);
 			}
 		});
