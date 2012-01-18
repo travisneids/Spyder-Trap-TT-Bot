@@ -327,7 +327,7 @@ bot.on('speak', function (data) {
 			bot.speak('commands: rules, ping, facebook, twitter, users, owner, source, /roll, '
 				+ 'platforms, past24hours, totalawesomes, bestplays, bestdjs, worstdjs, dbsize, '
 				+ 'stats, mostplayed, mostawesomed, mostlamed, mostsnagged, '
-				+ 'mystats, mymostplayed, mymostawesomed, mymostlamed, mymostsnagged, myartists, mysongs [count]'
+				+ 'mystats, mymostplayed, mymostawesomed, mymostlamed, mymostsnagged, myartists, mysongs [count], '
 				+ 'pastnames [username], similar, similarartists');
 			break;
 
